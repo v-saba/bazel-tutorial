@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package telemetry_server.v1;
+
+enum TelemetryType {
+    TELEMETRY_TYPE_UNSPECIFIED = 0;
+    TELEMETRY_TYPE_HEARTBEAT = 1;
+    TELEMETRY_TYPE_LOG = 2;
+    TELEMETRY_TYPE_CPU_USAGE = 3;
+}
+
+message TelemetryRequest {
+    TelemetryType telemetry_type = 1;
+}
+
+message TelemetryResponse {
+    TelemetryType telemetry_type = 1;
+    oneof telemetry_data {
+        HeartbeatTelemetry heartbeat_telemetry = 2;
+        LogTelemetry log_telemetry = 3;
+        CpuUsageTelemetry cpu_usage_telemetry = 4;
+    }
+    int64 timestamp = 5;
+}
+
+message HeartbeatTelemetry {
+}
+
+message LogTelemetry {
+    string log_data = 1;
+}
+
+message CpuUsageTelemetry {
+    double cpu_usage = 1;
+}
+
+service TelemetryService {
+    rpc QueryTelemetry(TelemetryRequest) returns (TelemetryResponse);
+}
